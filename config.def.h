@@ -5,6 +5,7 @@ const unsigned int interval = 1000;
 
 /* text to show if no value can be retrieved */
 static const char unknown_str[] = "n/a";
+static const char volcmd[]  = "pamixer --get-volume"; 
 
 /* maximum output string length */
 #define MAXLEN 2048
@@ -65,9 +66,7 @@ static const char unknown_str[] = "n/a";
  */
 static const struct arg args[] = {
 	/* function format          argument */
-	/* { username,		"[USER: %s] ",	 	     NULL         }, */
-	{ ram_used,		"[USED RAM: %s] ",	 NULL         },
-	{ vol_perc,		"[VOL: %s%] ",		 	 "/dev/mixer" },
-	{ battery_perc,	"[BAT: %s%] ",		 	 "BAT0"       },
-	{ datetime,  	"%s",             		 "%F %T"      },
+	{ ram_used,		  "[USED RAM: %s] ", NULL     },
+	{ run_command,	"[VOL: %s%%] ",	   volcmd   },
+	{ datetime,  	  "%s",              "%F %T"  },
 };
