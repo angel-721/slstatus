@@ -81,5 +81,5 @@ static const struct arg args[] = {
 	{ media_time_remaining,	     " ^fg(8BAAFF)(%s)^fg()] ",	   NULL                   },
 	{ ram_used,		               "[RAM: %s] ",	               NULL                   },
 	{ run_command,		           "[VOL: %s%%] ",		           "pamixer --get-volume" },
-	{ datetime,  	               "%s ",             	         "%F %T"                },
+	{ datetime,  	               "^fg(7DCFFF)%s^fg() ",        "%F %T"                },
 };

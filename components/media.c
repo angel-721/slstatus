@@ -14,20 +14,24 @@ media_status(const char *unused)
 	/* Check if any media player is running */
 	fp = popen("playerctl status 2>/dev/null", "r");
 	if (!fp) {
-		return NULL;
+		return "";
 	}
 
 	p = fgets(buf, sizeof(buf) - 1, fp);
 	pclose(fp);
 
 	if (!p)
-		return NULL;
+		return "";
 
 	/* Remove trailing newline */
 	if ((p = strrchr(buf, '\n')))
 		p[0] = '\0';
 
-	return buf[0] ? buf : NULL;
+	/* Return empty string if no players found */
+	if (buf[0] == '\0' || strstr(buf, "No players found"))
+		return "";
+
+	return buf;
 }
 
 const char *
@@ -35,23 +39,41 @@ media_title(const char *unused)
 {
 	FILE *fp;
 	char *p;
+	FILE *status_fp;
+	char status[32] = "";
+
+	/* First check if any player is running */
+	status_fp = popen("playerctl status 2>/dev/null", "r");
+	if (status_fp) {
+		if (fgets(status, sizeof(status) - 1, status_fp)) {
+			if ((p = strrchr(status, '\n')))
+				p[0] = '\0';
+		}
+		pclose(status_fp);
+	}
+
+	/* If no player is playing or paused, return "No media" */
+	if (strcmp(status, "Playing") != 0 && strcmp(status, "Paused") != 0) {
+		return "No media";
+	}
 
 	fp = popen("playerctl metadata title 2>/dev/null", "r");
 	if (!fp) {
-		return NULL;
+		return "";
 	}
 
 	p = fgets(buf, sizeof(buf) - 1, fp);
 	pclose(fp);
 
 	if (!p)
-		return NULL;
+		return "";
 
 	/* Remove trailing newline */
 	if ((p = strrchr(buf, '\n')))
 		p[0] = '\0';
 
-	return buf[0] ? buf : NULL;
+	/* Return the title if available, otherwise empty string */
+	return buf[0] ? buf : "";
 }
 
 const char *
@@ -62,20 +84,21 @@ media_artist(const char *unused)
 
 	fp = popen("playerctl metadata artist 2>/dev/null", "r");
 	if (!fp) {
-		return NULL;
+		return "";
 	}
 
 	p = fgets(buf, sizeof(buf) - 1, fp);
 	pclose(fp);
 
 	if (!p)
-		return NULL;
+		return "";
 
 	/* Remove trailing newline */
 	if ((p = strrchr(buf, '\n')))
 		p[0] = '\0';
 
-	return buf[0] ? buf : NULL;
+	/* Return empty string if no artist */
+	return buf[0] ? buf : "";
 }
 
 const char *
@@ -148,7 +171,7 @@ media_time_remaining(const char *unused)
 		return bprintf("%d:%02d / %d:%02d", current_min, current_sec, total_min, total_sec_int);
 	}
 
-	return NULL;
+	return "";
 }
 
 const char *
@@ -156,7 +179,7 @@ media(const char *fmt)
 {
 	FILE *fp;
 	char *p;
-	char status[32] = "Unknown";
+	char status[32] = "";
 	char title[256] = "";
 	char artist[256] = "";
 
@@ -170,7 +193,7 @@ media(const char *fmt)
 		pclose(fp);
 	}
 
-	/* Only show if playing or paused */
+	/* Return NULL (empty display) if no media is playing or paused */
 	if (strcmp(status, "Playing") != 0 && strcmp(status, "Paused") != 0) {
 		return NULL;
 	}
@@ -195,17 +218,22 @@ media(const char *fmt)
 		pclose(fp);
 	}
 
+	/* Use default title if none found */
+	if (!title[0]) {
+		snprintf(title, sizeof(title), "No media");
+	}
+
 	/* Format the output based on fmt argument */
 	if (fmt && strcmp(fmt, "full") == 0) {
-		/* Full format: Artist - Title */
-		if (artist[0] && title[0]) {
+		/* Full format: Artist - Title (only show hyphen if we have artist) */
+		if (artist[0]) {
 			return bprintf("%s - %s", artist, title);
-		} else if (title[0]) {
+		} else {
 			return bprintf("%s", title);
 		}
 	} else {
 		/* Default format: just title */
-		return bprintf("%s", title[0] ? title : "No Track");
+		return bprintf("%s", title);
 	}
 
 	return NULL;
