@@ -43,6 +43,14 @@ const char *keymap(const char *unused);
 /* load_avg */
 const char *load_avg(const char *unused);
 
+/* media */
+const char *media(const char *fmt);
+const char *media_status(const char *unused);
+const char *media_title(const char *unused);
+const char *media_artist(const char *unused);
+const char *media_album(const char *unused);
+const char *media_time_remaining(const char *unused);
+
 /* netspeeds */
 const char *netspeed_rx(const char *interface);
 const char *netspeed_tx(const char *interface);
