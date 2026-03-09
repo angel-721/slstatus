@@ -5,6 +5,19 @@
 #include "../slstatus.h"
 #include "../util.h"
 
+#define MAX_TITLE_LEN 30
+
+/* Helper function to truncate string to max length with ... */
+static void
+truncate_str(char *str, size_t max_len)
+{
+	size_t len = strlen(str);
+
+	if (len > max_len) {
+		strcpy(str + max_len - 3, "...");
+	}
+}
+
 const char *
 media_status(const char *unused)
 {
@@ -71,6 +84,11 @@ media_title(const char *unused)
 	/* Remove trailing newline */
 	if ((p = strrchr(buf, '\n')))
 		p[0] = '\0';
+
+	/* Truncate long titles */
+	if (buf[0]) {
+		truncate_str(buf, MAX_TITLE_LEN);
+	}
 
 	/* Return the title if available, otherwise empty string */
 	return buf[0] ? buf : "";
@@ -206,6 +224,11 @@ media(const char *fmt)
 				p[0] = '\0';
 		}
 		pclose(fp);
+	}
+
+	/* Truncate long titles */
+	if (title[0]) {
+		truncate_str(title, MAX_TITLE_LEN);
 	}
 
 	/* Get artist */
