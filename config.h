@@ -72,12 +72,14 @@ static const char unknown_str[] = "n/a";
  * wifi_essid          WiFi ESSID                      interface name (wlan0)
  * wifi_perc           WiFi signal in percent          interface name (wlan0)
  */
+
+// The colors is for the DWL barcolors patch.
 static const struct arg args[] = {
-	/*                           function format                                argument */
-	{ media_artist,	             "[󰝚 \033[38;2;238;83;150m%s\033[0m - ",	      NULL                   },
-	{ media_title,	             "\033[38;2;120;169;255m%s\033[0m",	            NULL                   },
-	{ media_time_remaining,	     " \033[38;2;139;170;255m(%s)\033[0m] ",	      NULL                   },
-	{ ram_used,		               "[RAM: %s] ",	                                NULL                   },
-	{ run_command,		           "[VOL: %s%%] ",		                            "pamixer --get-volume" },
-	{ datetime,  	               "%s ",             	                          "%F %T"                },
+	/*                           function format               argument */
+	{ media_artist,	             "[󰝚 ^fg(EE5396)%s^fg() - ",	 NULL                   },
+	{ media_title,	             "^fg(78A9FF)%s^fg()",	       NULL                   },
+	{ media_time_remaining,	     " ^fg(8BAAFF)(%s)^fg()] ",	   NULL                   },
+	{ ram_used,		               "[RAM: %s] ",	               NULL                   },
+	{ run_command,		           "[VOL: %s%%] ",		           "pamixer --get-volume" },
+	{ datetime,  	               "%s ",             	         "%F %T"                },
 };
