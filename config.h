@@ -75,11 +75,11 @@ static const char unknown_str[] = "n/a";
 
 // The colors is for the DWL barcolors patch.
 static const struct arg args[] = {
-	/*                           function format               argument */
-	{ media_artist,	             "[󰝚 ^fg(EE5396)%s^fg() - ",	 NULL                   },
-	{ media_title,	             "^fg(78A9FF)%s^fg()",	       NULL                   },
-	{ media_time_remaining,	     " ^fg(8BAAFF)(%s)^fg()] ",	   NULL                   },
-	{ ram_used,		               "[RAM: %s] ",	               NULL                   },
-	{ run_command,		           "[VOL: %s%%] ",		           "pamixer --get-volume" },
-	{ datetime,  	               "^fg(7DCFFF)%s^fg() ",        "%F %T"                },
+	/*                           function format                   argument */
+	{ media_artist,	             "[󰝚 ^fg(EE5396)%s^fg() - ",       NULL                                                          },
+	{ media_title,	             "^fg(78A9FF)%s^fg()",	       NULL                                                          },
+	{ media_time_remaining,	     " ^fg(8BAAFF)(%s)^fg()] ",	       NULL                                                          },
+	{ ram_used,		     "[RAM: %s] ",	               NULL                                                          },
+	{ run_command,               "[VOL: %s%%] ",                   "amixer get Master | awk -F'[][%]' '/Left:/{print $2; exit}'" },
+	{ datetime,  	             "^fg(7DCFFF)%s^fg() ",            "%F %T"                                                       },
 };
